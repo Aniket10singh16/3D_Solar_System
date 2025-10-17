@@ -296,5 +296,5 @@ Please open an issue or PR for improvements, optimizations, or new features.
 
 ## 📜 License
 
-MIT License © 2025. See [LICENSE](LICENSE) for details.
+GNU V3.0 License © 2025. See [LICENSE](LICENSE) for details.
 
