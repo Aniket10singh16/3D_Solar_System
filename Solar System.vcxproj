@@ -71,9 +71,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Workspace\OpenGLlibraries\include;C:\Workspace\OpenGL\Solar System\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Workspace\OpenGLlibraries\lib;$(LibraryPath)</LibraryPath>
-    <SourcePath>C:\Workspace\OpenGLlibraries\src;C:\Workspace\OpenGL\Solar System\src;$(SourcePath)</SourcePath>
+    <IncludePath>C:\Workspace\OpenGLlibraries\include;C:\Workspace\OpenGL\Solar System\Include;$(IncludePath);C:\Workspace\OpenGL\Solar System\Include;C:\Workspace\OpenGLlibraries\include</IncludePath>
+    <LibraryPath>C:\Workspace\OpenGLlibraries\lib;C:\Workspace\OpenGLlibraries\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>C:\Workspace\OpenGLlibraries\src;C:\Workspace\OpenGL\Solar System\src;$(SourcePath);C:\Workspace\OpenGL\Solar System\src;C:\Workspace\OpenGLlibraries\src</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;C:\Workspace\OpenGL\Solar System\Include;C:\Workspace\OpenGLlibraries\include</IncludePath>
+    <LibraryPath>C:\Workspace\OpenGLlibraries\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <SourcePath>$(VC_SourcePath);;C:\Workspace\OpenGL\Solar System\src;C:\Workspace\OpenGLlibraries\src</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -110,13 +115,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Workspace\OpenGLlibraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Workspace\OpenGLlibraries\include;C:\Workspace\OpenGLlibraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;glew32.lib;soil2-debug.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Workspace\OpenGLlibraries\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Workspace\OpenGLlibraries\lib;C:\Workspace\OpenGLlibraries\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -127,17 +132,31 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Workspace\OpenGLlibraries\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Workspace\OpenGLlibraries\lib;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;soil2-debug.lib;opengl32.lib;glfw3.lib;glew32.lib;soil2-debug.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="Celestial-Engine-V2-Design-Document.md" />
+    <None Include="CPP-FUNDAMENTALS-REFERENCE.md" />
+    <None Include="Enhanced-Core-Algorithms-Section.md" />
+    <None Include="PROJECT-STATUS-SUMMARY.md" />
+    <None Include="QUICK-START-INDEX.md" />
+    <None Include="QUICK-START-NEXT-PHASE.md" />
+    <None Include="QUICK-START-PHASE-3.md" />
+    <None Include="QUICK-START-PHASE-4.md" />
+    <None Include="QUICK-START-PHASE-5.md" />
+    <None Include="README-DOCUMENTATION.md" />
     <None Include="Solar System Interactive Renderer - Design Document.pdf" />
     <None Include="solar-system-design-doc.md" />
+    <None Include="WALKTHROUGH.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -146,6 +165,9 @@
     <ClInclude Include="Include\Renderer\Mesh.h" />
     <ClInclude Include="Include\Renderer\Renderer.h" />
     <ClInclude Include="Include\Renderer\Shader.h" />
+    <ClInclude Include="Include\Scene\Camera.h" />
+    <ClInclude Include="Include\Scene\CameraController.h" />
+    <ClInclude Include="Include\Scene\CameraManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\OpenGLlibraries\src\glad.c" />
@@ -156,6 +178,9 @@
     <ClCompile Include="src\Renderer\Mesh.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Scene\Camera.cpp" />
+    <ClCompile Include="src\Scene\CameraController.cpp" />
+    <ClCompile Include="src\Scene\CameraManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
