@@ -12,6 +12,8 @@
 #include <Renderer/Shader.h>
 #include <Renderer/Mesh.h>
 #include <glm/glm.hpp>
+#include <Scene/CameraManager.h>
+#include <Scene/Camera.h>
 
  /**
   * @class Renderer
@@ -94,4 +96,23 @@ public:
 	 * @param shader The Shader to use for drawing (read-only).
 	 */
 	void Draw(const Mesh& mesh, const Shader& shader);
+
+	/**
+	 * @brief Renders the scene from all active cameras.
+	 * @param cameras List of active cameras from CameraManager.
+	 *
+	 * Each camera may:
+	 *  - Use a different framebuffer
+	 *  - Define its own viewport (for split-screen, minimap, etc.)
+	 *  - Render different object layers (future optimization)
+	 */
+	void RenderFrame(const std::vector<CameraRenderData> cameras);
+
+	/**
+	 * @brief Draws the scene from the perspective of a given camera.
+	 * @param camera The active camera to render with.
+	 *
+	 * In Phase 2, this will render spheres (planets).
+	 */
+	void DrawScene(const Camera& camera, int layer);
 };

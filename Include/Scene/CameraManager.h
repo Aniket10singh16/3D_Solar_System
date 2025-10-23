@@ -79,4 +79,9 @@ public:
      * @brief Returns all currently active cameras for this frame.
      */
     std::vector<CameraRenderData> GetActiveCameras() const;
+
+    /**
+    * @brief Returns first active camera for this frame.
+    */
+    Camera& GetActive() const;
 };

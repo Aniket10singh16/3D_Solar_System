@@ -56,3 +56,46 @@ void Renderer::Draw(const Mesh& mesh, const Shader& shader) {
 	shader.Use();
 	mesh.Draw();
 }
+
+void Renderer::DrawScene(const Camera& camera, int layer)
+{
+    // Placeholder:
+    // Future: Iterate over all meshes/entities and render them with MVP
+    // For now: just clear with a color, camera isn't yet used
+
+    (void)camera; // Silence unused parameter warning
+}
+
+void Renderer::RenderFrame(const std::vector<CameraRenderData> cameras)
+{
+    // Optimization: minimal framebuffer binds by grouping per frambuffer ID
+    unsigned int currentFBO = -1;
+
+    if (cameras.empty()) return; // Check if vector is empty
+
+    for (const auto& camData : cameras)
+    {
+        if (!camData.active || !camData.camera)
+            continue;
+
+        // Bind frambuffer if needed
+        if (camData.framebuffer != currentFBO)
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, camData.framebuffer);
+            currentFBO = camData.framebuffer;
+        }
+
+        // Set viewport for this camera
+        glViewport(camData.viewport.x, camData.viewport.y,
+            camData.viewport.z, camData.viewport.w);
+
+        // Clear before each camera pass
+        Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
+
+        // Draw scene from this camera's perspective
+        DrawScene(*camData.camera, camData.renderLayer);
+    }
+
+    // Return to default frambuffer after all cameras
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}

@@ -8,9 +8,13 @@
 * a reusable interface for rendering geometry in the engine.
 * 
 * 
+* A Mesh encapsulates:
+*   - Vertex Buffer Object (VBO)
+*   - Element Buffer Object (EBO)
+*   - Vertex Array Object (VAO)
+*   - Draw call parameters (vertex/index count)
+* 
 * Future extensions:
-
-	Add support for element buffers (EBO) for indexed drawing
 
 	Add normals, UVs, tangents, bitangents
 
@@ -21,6 +25,7 @@
 
 #pragma once
 #include <vector>
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 
 /**
@@ -35,6 +40,9 @@
 struct Vertex {
 	glm::vec3 position; ///< 3d position of the vertex
 	glm::vec3 color;	///< EGB color of the vertex
+	glm::vec3 normal;
+	glm::vec2 texCoord;   
+	glm::vec3 tangent;    
 };
 
 /**
@@ -59,9 +67,13 @@ struct Vertex {
 
 class Mesh {
 private:
-	unsigned int VAO; ///< Vertex Array Object (encapsulates buffer state)
-	unsigned int VBO; ///< Vertex buffer Object (encapsulates vertex data)
-	
+	unsigned int VAO = 0; ///< Vertex Array Object (encapsulates buffer state)
+	unsigned int VBO = 0; ///< Vertex buffer Object (encapsulates vertex data)
+	unsigned int EBO = 0; ///< Element Buffer Object
+
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
+
 public:
 	/**
 	 * @brief Constructs a Mesh from a given set of vertices.

@@ -147,6 +147,7 @@
     <None Include="Celestial-Engine-V2-Design-Document.md" />
     <None Include="CPP-FUNDAMENTALS-REFERENCE.md" />
     <None Include="Enhanced-Core-Algorithms-Section.md" />
+    <None Include="LICENSE" />
     <None Include="PROJECT-STATUS-SUMMARY.md" />
     <None Include="QUICK-START-INDEX.md" />
     <None Include="QUICK-START-NEXT-PHASE.md" />
@@ -154,6 +155,7 @@
     <None Include="QUICK-START-PHASE-4.md" />
     <None Include="QUICK-START-PHASE-5.md" />
     <None Include="README-DOCUMENTATION.md" />
+    <None Include="README.md" />
     <None Include="Solar System Interactive Renderer - Design Document.pdf" />
     <None Include="solar-system-design-doc.md" />
     <None Include="WALKTHROUGH.md" />
@@ -168,6 +170,8 @@
     <ClInclude Include="Include\Scene\Camera.h" />
     <ClInclude Include="Include\Scene\CameraController.h" />
     <ClInclude Include="Include\Scene\CameraManager.h" />
+    <ClInclude Include="Include\Scene\SceneNode.h" />
+    <ClInclude Include="Include\Scene\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\OpenGLlibraries\src\glad.c" />
@@ -181,6 +185,8 @@
     <ClCompile Include="src\Scene\Camera.cpp" />
     <ClCompile Include="src\Scene\CameraController.cpp" />
     <ClCompile Include="src\Scene\CameraManager.cpp" />
+    <ClCompile Include="src\Scene\Source.cpp" />
+    <ClCompile Include="src\Scene\Transform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

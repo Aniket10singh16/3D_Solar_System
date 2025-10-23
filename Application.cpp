@@ -4,6 +4,34 @@
 Application::Application(int width, int height, const std::string& title)
     : window(width, height, title)
 {
+    // Register window with input system
+    Input::Initialize(window.GetNativeHandle());
+
+    // Create cameras
+    Camera* mainCamera = new Camera({ 0, 0, 3 }, (float)width / height);
+    Camera* overheadCamera = new Camera({ 0, 50, 0 }, (float)width / height);
+
+    // Example viewport: full window (x=0, y=0, width, height)
+    glm::ivec4 mainViewport(0, 0, width, height);
+    glm::ivec4 overheadViewport(width - 256, height - 256, 256, 256);
+
+    cameraManager.AddCamera("main", mainCamera, mainViewport);
+    cameraManager.AddCamera("overhead", overheadCamera, overheadViewport);
+
+}
+
+Application::~Application()
+{
+    delete &cameraManager;
+    delete controller;
+}
+
+void Application::ProcessInput()
+{
+    // Global escape condition
+    if (Input::IsKeyPressed(GLFW_KEY_ESCAPE)) {
+        running = false;
+    }
 }
 
 void Application::Run()
@@ -14,8 +42,9 @@ void Application::Run()
         return;
     }
 
-    Input::Initialize(window.GetNativeHandle());
+    //Input::Initialize(window.GetNativeHandle());
     renderer.Initialize();
+
 
     // --- 2. Setup Phase 1 demo objects ---
     std::vector<Vertex> vertices = {
@@ -48,15 +77,28 @@ void Application::Run()
     Shader shader(vs, fs);
 
     // --- 3. Main loop ---
-    while (!window.ShouldClose()) {
+    while (running && !window.ShouldClose()) {
+        // Time tracking
+        float currentFrame = (float)glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         // Poll for keyboard/mouse input
         window.PollEvents();
+
+        ProcessInput();
+
+        // Update active camera via controller
+        controller->Update(deltaTime);
 
         // Clear the screen with dark gray
         renderer.Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
 
         // Draw the triangle
-        renderer.Draw(triangle, shader);
+        //renderer.Draw(triangle, shader);
+        auto activeCameras = cameraManager.GetActiveCameras();
+        renderer.RenderFrame(activeCameras);
+
 
         // Swap front/back buffers
         window.SwapBuffers();
