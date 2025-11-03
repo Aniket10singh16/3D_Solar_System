@@ -80,7 +80,19 @@ public:
 	 *
 	 * @param vertices A vector of Vertex structs containing position and color data.
 	 */
-	Mesh(const std::vector<Vertex>& vertices);
+	Mesh() = default;
+	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
+
+	// Move constructor and assignment (for proper OpenGL resource management)
+	Mesh(Mesh&& other) noexcept;
+	Mesh& operator=(Mesh&& other) noexcept;
+
+	// Delete copy constructor and assignment (OpenGL resources can't be copied)
+	Mesh(const Mesh&) = delete;
+	Mesh& operator=(const Mesh&) = delete;
+
+	/** @brief Uploads vertex/index data to GPU (called internally). */
+	void Initialize();
 
 	/**
 	* @brief Releases GPU resources (VAO, VBO).
@@ -99,4 +111,7 @@ public:
 	 */
 
 	void Draw() const;
+
+	// Utility generators
+	static Mesh CreateSphere(float radius, unsigned int sectors, unsigned int stacks);
 };

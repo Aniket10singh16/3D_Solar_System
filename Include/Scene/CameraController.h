@@ -19,8 +19,8 @@ class CameraController
 {
 private:
 	Camera& camera;			///< Reference to controlled camera
-	float movementSpeed = 2.5f;	///< Units per second
-	float mouseSensitivity = 0.1f;	///< Degrees per pixel of mouse movement
+	float movementSpeed = 5.0f;	///< Units per second
+	float mouseSensitivity = 0.05f;	///< Degrees per pixel of mouse movement
 
 public:
     /**

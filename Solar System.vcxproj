@@ -156,6 +156,8 @@
     <None Include="QUICK-START-PHASE-5.md" />
     <None Include="README-DOCUMENTATION.md" />
     <None Include="README.md" />
+    <None Include="Shader\basic.frag" />
+    <None Include="Shader\basic.vert" />
     <None Include="Solar System Interactive Renderer - Design Document.pdf" />
     <None Include="solar-system-design-doc.md" />
     <None Include="WALKTHROUGH.md" />
@@ -185,6 +187,7 @@
     <ClCompile Include="src\Scene\Camera.cpp" />
     <ClCompile Include="src\Scene\CameraController.cpp" />
     <ClCompile Include="src\Scene\CameraManager.cpp" />
+    <ClCompile Include="src\Scene\SceneNode.cpp" />
     <ClCompile Include="src\Scene\Source.cpp" />
     <ClCompile Include="src\Scene\Transform.cpp" />
   </ItemGroup>

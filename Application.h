@@ -11,6 +11,8 @@ and orchestrates rendering. It ties together Window, Input,
 Renderer, and (eventually) Scene and GameObjects.
 */
 #pragma once
+#define GLM_ENABLE_EXPERIMENTAL
+#include <memory>
 #include <string>
 #include "Core/Window.h"
 #include "Renderer/Renderer.h"
@@ -20,6 +22,7 @@ Renderer, and (eventually) Scene and GameObjects.
 #include <GLFW/glfw3.h>
 #include "Scene/CameraManager.h"
 #include "Scene/CameraController.h"
+#include <iostream>
 
 /**
  * @class Application
@@ -33,16 +36,22 @@ Renderer, and (eventually) Scene and GameObjects.
 class Application
 {
 private:
-    Window window;    ///< Window and OpenGL context
-    Renderer renderer; ///< Renderer for issuing draw calls
-    CameraManager cameraManager; ///< Stores and switches between cameras
-    CameraController* controller; ///< Controls the active camera (owned externally)
+    std::unique_ptr<Window> window;    ///< Window and OpenGL context
+    std::unique_ptr<Renderer> renderer; ///< Renderer for issuing draw calls
+    std::unique_ptr<CameraManager> cameraManager; ///< Stores and switches between cameras
+    std::unique_ptr<CameraController> cameraController; ///< Controls the active camera (owned externally)
+
+    // Planet objects
+    RenderObject sun;
+    RenderObject earth;
+    RenderObject moon;
 
     bool running = true;    ///< Loop condition
-    float deltaTime = 0.0f;     ///< Time between frames
-    float lastFrame = 0.0f;   ///< Timestamp of last frame
 
-    void ProcessInput();        ///< Handle global input
+    void InitScene();
+    void ProcessInput(float dt); ///< Handle global input
+    void Update(float dt);
+    void Render();       
 
 public:
     /**

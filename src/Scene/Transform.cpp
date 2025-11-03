@@ -1,3 +1,5 @@
+#define GLM_ENABLE_EXPERIMENTAL
+
 /**
  * @file Transform.cpp
  * @brief Transform implementation: model matrix, normal matrix, and helpers.
@@ -171,12 +173,12 @@ void Transform::LookAt(const glm::vec3& target, const glm::vec3& up)
 	if (glm::length(forwardDir) < 1e-6f)
 		return;
 
-	// glm::l0okAt generates a view matrix (camrea space),
+	// glm::lookAt generates a view matrix (camera space),
 	// so we invert it to get the world-space rotation matrix.
 	glm::mat4 view = glm::lookAt(position, target, up);
-	glm::mat4 rotationMatrix = glm::mat3(glm::transpose(view));	// inverse(view) = transpose for rotation
+	glm::mat3 rotationMatrix = glm::mat3(glm::transpose(view));	// inverse(view) = transpose for rotation
 
 	// Convert to quaternion
-	rotation = glm::normalize(glm::normalize(glm::quat_cast(rotationMatrix)));
+	rotation = glm::normalize(glm::quat_cast(rotationMatrix));
 	dirty = true;
 }

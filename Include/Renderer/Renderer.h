@@ -9,18 +9,31 @@
 * 
 */
 #pragma once
+#include <memory>
+#include <vector>
 #include <Renderer/Shader.h>
+#include <Scene/Transform.h>
 #include <Renderer/Mesh.h>
 #include <glm/glm.hpp>
 #include <Scene/CameraManager.h>
-#include <Scene/Camera.h>
+
+/**
+ * @struct RenderObject
+ * @brief Represents a drawable object in the scene (mesh + transform).
+ */
+struct RenderObject
+{
+	Mesh mesh;
+	Transform transform;
+	int renderLayer = 0;
+};
 
  /**
   * @class Renderer
-  * @brief High-level rendering façade that issues draw calls using Mesh and Shader objects.
+  * @brief High-level rendering faï¿½ade that issues draw calls using Mesh and Shader objects.
   *
   * The Renderer provides a small, stable surface for the rest of the engine to perform rendering.
-  * It does NOT own Mesh or Shader instances — callers retain ownership and must ensure their lifetime
+  * It does NOT own Mesh or Shader instances ï¿½ callers retain ownership and must ensure their lifetime
   * spans any calls into Renderer that reference them.
   *
   * Responsibilities:
@@ -55,8 +68,17 @@
   * renderer.Draw(mesh, shader);
   * @endcode
   */
-class Renderer {
+
+
+class Renderer 
+{
+private:
+	std::unique_ptr<Shader> shader;		///< Active shader program
+	std::vector<const RenderObject*> sceneObjects;	///< Pointers to objects to render this frame
 public:
+	Renderer();
+	~Renderer();
+
 	/**
 	 * @brief Prepare renderer global state and subsystems.
 	 *
@@ -78,26 +100,6 @@ public:
 	void Clear(const glm::vec4& color);
 
 	/**
-	 * @brief Issue draw commands for a single mesh using the provided shader.
-	 *
-	 * Preconditions:
-	 * - A valid OpenGL context must be current.
-	 * - shader.Use() should be called before Draw if the shader needs to be bound explicitly.
-	 * - The Mesh and Shader objects must remain valid for the duration of the call.
-	 *
-	 * Ownership:
-	 * - Renderer does not take ownership of mesh or shader.
-	 *
-	 * Future enhancements:
-	 * - Overloads accepting transform matrices, per-draw uniform parameters, and instancing counts.
-	 * - A DrawBatch(...) API that accepts multiple meshes/shaders to allow internal state sorting.
-	 *
-	 * @param mesh  The Mesh to draw (read-only).
-	 * @param shader The Shader to use for drawing (read-only).
-	 */
-	void Draw(const Mesh& mesh, const Shader& shader);
-
-	/**
 	 * @brief Renders the scene from all active cameras.
 	 * @param cameras List of active cameras from CameraManager.
 	 *
@@ -106,13 +108,23 @@ public:
 	 *  - Define its own viewport (for split-screen, minimap, etc.)
 	 *  - Render different object layers (future optimization)
 	 */
-	void RenderFrame(const std::vector<CameraRenderData> cameras);
+	void RenderFrame(const std::vector<CameraRenderData>& cameras);
 
 	/**
 	 * @brief Draws the scene from the perspective of a given camera.
 	 * @param camera The active camera to render with.
-	 *
-	 * In Phase 2, this will render spheres (planets).
 	 */
-	void DrawScene(const Camera& camera, int layer);
+	void DrawScene(const CameraRenderData& camData, int layer);
+
+
+	/**
+	 * @brief Adds a renderable mesh to the scene.
+	 * Ownership is simple; this is a temporary per-frame list.
+	 * Takes a const reference to avoid copying the mesh.
+	 */
+	void AddRenderObject(const RenderObject& object);
+
+	/** Clears the list of render objects after each frame. */
+	void ResetSceneObjects();
+
 };

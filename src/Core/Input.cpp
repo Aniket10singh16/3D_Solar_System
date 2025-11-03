@@ -11,6 +11,9 @@ void Input::Initialize(GLFWwindow* window)
 	// Install GLFW callbacks that forward events to Input's static methods
 	glfwSetKeyCallback(window, KeyCallback);
 	glfwSetCursorPosCallback(window, CursorPosCallback);
+	
+	// Capture and hide the mouse cursor
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 bool Input::IsKeyPressed(int key)
@@ -48,6 +51,15 @@ void Input::KeyCallback(GLFWwindow*, int key, int, int action, int)
 
 void Input::CursorPosCallback(GLFWwindow*, double xpos, double ypos)
 {
+	static bool firstMouse = true;
+	
+	// Initialize mouse position on first callback to avoid large delta
+	if (firstMouse) {
+		mousePos = { xpos, ypos };
+		firstMouse = false;
+		return;
+	}
+	
 	// Update mouse delta (difference since last frame)
 	mouseDelta = glm::dvec2(xpos, ypos) - mousePos;
 	mousePos = { xpos, ypos };

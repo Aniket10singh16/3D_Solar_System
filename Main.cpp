@@ -2,12 +2,20 @@
 
 int main()
 {
-    // Create the engine application with window settings
-    Application app(800, 600, "Celestial Engine - Phase 1");
+	try
+	{
+		// Create the engine application with window settings
+		Application app(1280, 720, "Celestial Engine - Phase 2");
 
-    // Run the main loop (blocks until exit)
-    app.Run();
+		// Run the main loop (blocks until exit)
+		app.Run();
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << "Fatal error: " << e.what() << std::endl;
+		return EXIT_FAILURE;
 
-    // Exit cleanly
-    return 0;
+	}
+
+    return EXIT_SUCCESS;
 }

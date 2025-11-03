@@ -1,112 +1,120 @@
-#include "Application.h"
-#include <iostream>
+﻿#include "Application.h"
 
 Application::Application(int width, int height, const std::string& title)
-    : window(width, height, title)
 {
+    // Initialize the window and OpenGL context
+    window = std::make_unique<Window>(width, height, "Solar System");
+
+    // Initialize the GLFW window, OpenGL context and GLAD inside Window::Initialize()
+    if (!window->Initialize()) {
+        throw std::runtime_error("Failed to initialize Window.");
+    }
+
+    glfwMakeContextCurrent(window->GetNativeHandle());
+
     // Register window with input system
-    Input::Initialize(window.GetNativeHandle());
+    Input::Initialize(window->GetNativeHandle());
 
-    // Create cameras
-    Camera* mainCamera = new Camera({ 0, 0, 3 }, (float)width / height);
-    Camera* overheadCamera = new Camera({ 0, 50, 0 }, (float)width / height);
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        throw std::runtime_error("Failed to initialize GLAD.");
 
-    // Example viewport: full window (x=0, y=0, width, height)
-    glm::ivec4 mainViewport(0, 0, width, height);
-    glm::ivec4 overheadViewport(width - 256, height - 256, 256, 256);
+    // Initialize systems
+    renderer = std::make_unique<Renderer>();
+    cameraManager = std::make_unique<CameraManager>();
+    cameraController = std::make_unique<CameraController>(*cameraManager->CreateMainCamera(width, height));
 
-    cameraManager.AddCamera("main", mainCamera, mainViewport);
-    cameraManager.AddCamera("overhead", overheadCamera, overheadViewport);
+    // Initialize the scene
+    InitScene();
+
+    std::cout << "[Application] Initialized successfully.\n";
 
 }
+
 
 Application::~Application()
 {
-    delete &cameraManager;
-    delete controller;
+    glfwTerminate();
 }
 
-void Application::ProcessInput()
+void Application::InitScene()
 {
+    // 3D sphere meshes
+    sun.mesh = Mesh::CreateSphere(2.0f, 48, 24);
+    earth.mesh = Mesh::CreateSphere(1.0f, 36, 18);
+    moon.mesh = Mesh::CreateSphere(0.5f, 24, 12);
+
+    // Transform setup - place objects in front of camera (negative Z direction from camera at +Z)
+    // Camera at (0, 0, 15) looking at negative Z, so objects should be at Z < 15
+    sun.transform.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    earth.transform.SetPosition(glm::vec3(6.0f, 0.0f, 0.0f));
+    moon.transform.SetPosition(glm::vec3(8.0f, 0.0f, 0.0f));
+
+    sun.renderLayer = earth.renderLayer = moon.renderLayer = 0;
+    
+    std::cout << "[InitScene] Created 3 spheres (sun, earth, moon)\n";
+    std::cout << "[InitScene] Sun at (0, 0, 0), Earth at (6, 0, 0), Moon at (8, 0, 0)\n";
+}
+
+void Application::ProcessInput(float dt)
+{
+    cameraController->Update(dt);
     // Global escape condition
     if (Input::IsKeyPressed(GLFW_KEY_ESCAPE)) {
         running = false;
     }
 }
 
+void Application::Update(float dt)
+{
+    // Simple orbital motion for Earth & Moon
+    static float angle = 0.0f;
+    angle += dt * 20.0f; // degrees per second
+
+    float radians = glm::radians(angle);
+
+    earth.transform.SetPosition(glm::vec3(6.0f * cos(radians), 0.0f, 6.0f * sin(radians)));
+    moon.transform.SetPosition(earth.transform.GetPosition() + 
+        glm::vec3(2.0f * cos(3 * radians), 0.0f, 2.0f * sin(3 * radians)));
+}
+
+void Application::Render()
+{
+    // Add objects to renderer each frame
+    renderer->AddRenderObject(sun);
+    renderer->AddRenderObject(earth);
+    renderer->AddRenderObject(moon);
+
+    // Render from all active cameras
+    auto activeCameras = cameraManager->GetActiveCameras();
+    renderer->RenderFrame(activeCameras);
+
+    // Clear object list
+    renderer->ResetSceneObjects();
+
+    // Swap buffers
+    window->SwapBuffers();
+}
+
 void Application::Run()
 {
-    // --- 1. Initialize subsystems ---
-    if (!window.Initialize()) {
-        std::cerr << "[Application] Failed to initialize Window\n";
-        return;
-    }
+    float lastTime = static_cast<float>(glfwGetTime());
 
     //Input::Initialize(window.GetNativeHandle());
-    renderer.Initialize();
+    renderer->Initialize();
 
-
-    // --- 2. Setup Phase 1 demo objects ---
-    std::vector<Vertex> vertices = {
-        {{ 0.0f,  0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}}, // Top (red)
-        {{-0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}}, // Left (green)
-        {{ 0.5f, -0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}}  // Right (blue)
-    };
-    Mesh triangle(vertices);
-
-    std::string vs = R"(
-        #version 450 core
-        layout(location = 0) in vec3 aPos;
-        layout(location = 1) in vec3 aColor;
-        out vec3 ourColor;
-        void main() {
-            gl_Position = vec4(aPos, 1.0);
-            ourColor = aColor;
-        }
-    )";
-
-    std::string fs = R"(
-        #version 450 core
-        in vec3 ourColor;
-        out vec4 FragColor;
-        void main() {
-            FragColor = vec4(ourColor, 1.0);
-        }
-    )";
-
-    Shader shader(vs, fs);
 
     // --- 3. Main loop ---
-    while (running && !window.ShouldClose()) {
-        // Time tracking
-        float currentFrame = (float)glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+    while (running && !window->ShouldClose())
+    {
+        float currentTime = static_cast<float>(glfwGetTime());
+        float deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
 
-        // Poll for keyboard/mouse input
-        window.PollEvents();
+        glfwPollEvents();
 
-        ProcessInput();
-
-        // Update active camera via controller
-        controller->Update(deltaTime);
-
-        // Clear the screen with dark gray
-        renderer.Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
-
-        // Draw the triangle
-        //renderer.Draw(triangle, shader);
-        auto activeCameras = cameraManager.GetActiveCameras();
-        renderer.RenderFrame(activeCameras);
-
-
-        // Swap front/back buffers
-        window.SwapBuffers();
-
-        // Escape key closes the window
-        if (Input::IsKeyPressed(GLFW_KEY_ESCAPE)) {
-            break;
-        }
+        ProcessInput(deltaTime);
+        Update(deltaTime);
+        Render();
     }
 
     // --- 4. Shutdown ---

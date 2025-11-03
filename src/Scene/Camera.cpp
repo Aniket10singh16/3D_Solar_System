@@ -40,9 +40,9 @@ void Camera::Rotate(float yawDelta, float pitchDelta)
 	yaw += yawDelta;
 	pitch += pitchDelta;
 
-	// clamp pithc to avoid flipping the camera upside down
+	// clamp pitch to avoid flipping the camera upside down
 	if (pitch > 89.0f) pitch = 89.0f;
-	if (yaw < -89.0f) yaw = -89.0f;
+	if (pitch < -89.0f) pitch = -89.0f;
 
 	UpdateCameraVectors();
 }

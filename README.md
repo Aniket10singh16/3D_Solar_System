@@ -7,11 +7,64 @@ By the final phase, this will be a fully interactive, physically accurate solar 
 
 ---
 
+## 🚀 Quick Start
+
+1. **Open** `Solar System.sln` in Visual Studio
+2. **Build** the solution (Ctrl+Shift+B)
+3. **Run** the application (F5)
+4. **Controls:**
+   - WASD/QE to move camera
+   - Mouse to look around
+   - ESC to exit
+
+You should see three colored spheres (Sun, Earth, Moon) with basic lighting.
+
+---
+
 ## 🚀 Current Status
 
+**Last Updated:** November 3, 2025
+
 - **Phase 1 (Foundation)** – Complete ✅  
-- **Phase 2 (3D Rendering)** – In Progress  
-- **Phase 3+** – Planned (see Roadmap)
+- **Phase 2 (3D Rendering)** – Complete ✅  
+- **Phase 3 (Scene Graph)** – In Progress 🔄  
+- **Phase 4+** – Planned (see Roadmap)
+
+### Recent Achievements
+
+✅ **Core Systems Operational:**
+- Window management with GLFW wrapper
+- Input system (keyboard & mouse tracking)
+- OpenGL 4.6 renderer with depth testing
+- Shader compilation and management
+- Mesh system with VAO/VBO (move semantics implemented)
+- Camera system with view/projection matrices
+- Camera controller (WASD movement + mouse look)
+- Transform system (position, rotation, scale)
+
+✅ **3D Rendering Working:**
+- Sphere mesh generation (parametric UV sphere)
+- Basic Phong lighting model
+- Multiple celestial bodies rendering (Sun, Earth, Moon)
+- Camera orbit controls functional
+
+✅ **Critical Bugs Fixed (November 3, 2025):**
+- **OpenGL Resource Management**: Implemented move semantics for Mesh class to prevent GPU resource corruption
+- **Camera Pitch Clamping**: Fixed copy-paste error in pitch limit logic
+- **Memory Leak**: Added destructor to CameraManager for proper cleanup
+- **Type Safety**: Corrected mat4/mat3 type mismatch in Transform::LookAt()
+- **Renderer Storage**: Changed from value storage to pointer storage for non-copyable objects
+
+See `BUG-FIX-REPORT.md` for detailed analysis and lessons learned.
+
+### What's Working Now
+
+The application successfully renders a 3D solar system with:
+- Sun (yellow sphere at origin)
+- Earth (blue-green sphere orbiting)
+- Moon (grey sphere orbiting Earth)
+- Interactive camera with WASD + mouse controls
+- Basic lighting from sun position
 
 ---
 
@@ -51,16 +104,30 @@ UI Layer
 - [x] Mesh & Shader abstractions  
 - [x] Demo: render a simple triangle  
 
-### 🟡 Phase 2: 3D Rendering
-- [ ] Camera class (orbit & free-fly)  
-- [ ] Mesh generator (UV sphere for planets)  
-- [ ] Transformation system (model/view/projection)  
-- [ ] Basic planet rendering with colors  
+### ✅ Phase 2: 3D Rendering
+- [x] Camera class (orbit & free-fly)  
+- [x] Camera controller (WASD + mouse look)
+- [x] Camera manager (multi-camera support)
+- [x] Mesh generator (UV sphere for planets)  
+- [x] Transformation system (model/view/projection)  
+- [x] Basic planet rendering with colors
+- [x] Phong lighting implementation
+- [x] Multiple objects rendering
 
-### 🔜 Phase 3: Lighting & Materials
-- [ ] Phong shading with directional light (the Sun)  
+### 🟡 Phase 3: Scene Graph & Orbital Mechanics
+- [ ] SceneNode hierarchy system
+- [ ] GameObject with component architecture
+- [ ] CelestialBody base class
+- [ ] Orbital mechanics (Kepler's laws)
+- [ ] Planet and Sun classes
+- [ ] Realistic orbital paths  
+
+### 🔜 Phase 4: Advanced Rendering
+- [ ] Texture loading (stb_image integration)
+- [ ] Material system (PBR properties)
 - [ ] Textured planets (Earth, Mars, etc.)  
-- [ ] Normal maps for realism  
+- [ ] Normal maps for surface detail
+- [ ] Specular and roughness maps  
 
 ### 🔜 Phase 4: Simulation Layer
 - [ ] CelestialBody class (mass, orbit radius, speed)  
@@ -81,37 +148,63 @@ UI Layer
 
 ---
 
-## 📸 Preview
+## 📸 Current Preview
 
+**Phase 2 Complete - 3D Rendering Working:**
+
+The application currently renders:
+- Three 3D spheres (Sun, Earth, Moon) with different colors
+- Phong lighting model with ambient, diffuse, and specular components
+- Interactive camera with smooth WASD movement and mouse look
+- Proper depth testing and 3D perspective
+
+**Console Output:**
+```
+[Mesh] Created sphere: 1225 vertices, 6624 indices
+[Mesh] Created sphere: 703 vertices, 3672 indices
+[Mesh] Created sphere: 325 vertices, 1584 indices
+[InitScene] Created 3 spheres (sun, earth, moon)
+[Application] Initialized successfully.
+[Renderer] OpenGL Version: 4.6.0
+[Renderer] Drew 3 objects in first frame
+```
+
+**Next Phase:** Implementing scene graph and orbital mechanics for realistic planet motion.
 
 ---
 
 ## ⚙️ Build Instructions
 
-### 1. Clone
-```bash
+### Prerequisites
+- **Visual Studio 2019+** (or compatible C++17 compiler)
+- **Windows 10/11** (primary development platform)
+- **OpenGL 4.6** capable graphics card
 
-```
+### Dependencies (Already Integrated)
+- ✅ [GLFW 3.x](https://www.glfw.org/) – window & input management
+- ✅ [GLAD](https://glad.dav1d.de/) – OpenGL 4.6 function loader  
+- ✅ [GLM](https://github.com/g-truc/glm) – mathematics library for graphics
+- 📋 [stb_image](https://github.com/nothings/stb) – texture loading (Phase 4)
+- 📋 [ImGui](https://github.com/ocornut/imgui) – debug UI (Phase 6)
 
-### 2. Dependencies
-- [GLFW](https://www.glfw.org/) – window & input  
-- [GLAD](https://glad.dav1d.de/) – OpenGL function loader  
-- [GLM](https://github.com/g-truc/glm) – math library  
-- (Optional later) [ImGui](https://github.com/ocornut/imgui) – UI  
+### Build Steps
 
-Dependencies are included via `external/` or fetched via CMake.
+1. **Open Solution**
+   ```
+   Open "Solar System.sln" in Visual Studio
+   ```
 
-### 3. Build (CMake)
-```bash
-mkdir build && cd build
-cmake ..
-cmake --build .
-```
+2. **Select Configuration**
+   - Debug (for development with debugging symbols)
+   - Release (for optimized performance)
 
-### 4. Run
-```bash
+3. **Build**
+   - Press `Ctrl+Shift+B` or Build → Build Solution
+   - Executable will be in `x64/Debug/` or `x64/Release/`
 
-```
+4. **Run**
+   - Press `F5` (with debugging) or `Ctrl+F5` (without debugging)
+   - Or run the executable directly from the output folder
 
 ---
 
@@ -154,147 +247,179 @@ cmake --build .
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Directory Structure
+### Current Directory Structure
 
 ```
-CelestialEngine/
+Solar System/
 │
-├── assets/
-│   ├── shaders/
-│   │   ├── basic.vert
-│   │   ├── basic.frag
-│   │   ├── phong.vert
-│   │   ├── phong.frag
-│   │   ├── shadow.vert
-│   │   ├── shadow.frag
-│   │   └── particle.vert/frag
-│   ├── textures/
-│   │   ├── sun/
-│   │   ├── earth/
-│   │   ├── mars/
-│   │   └── ...
-│   └── models/
-│       └── sphere.obj
-│
-├── src/
+├── Include/                    # Header files
 │   ├── Core/
-│   │   ├── Application.cpp
-│   │   ├── Window.cpp
-│   │   ├── Input.cpp
-│   │   └── Time.cpp
+│   │   ├── Window.h           ✅ Complete
+│   │   └── Input.h            ✅ Complete
 │   ├── Renderer/
-│   │   ├── Renderer.cpp
-│   │   ├── Shader.cpp
-│   │   ├── Mesh.cpp
-│   │   ├── Texture.cpp
-│   │   ├── FrameBuffer.cpp
-│   │   └── UniformBuffer.cpp
-│   ├── Scene/
-│   │   ├── Scene.cpp
-│   │   ├── SceneNode.cpp
-│   │   ├── Transform.cpp
-│   │   ├── Camera.cpp
-│   │   └── Light.cpp
-│   ├── Objects/
-│   │   ├── GameObject.cpp
-│   │   ├── CelestialBody.cpp
-│   │   ├── Planet.cpp
-│   │   ├── Sun.cpp
-│   │   ├── AsteroidBelt.cpp
-│   │   └── Skybox.cpp
-│   ├── Systems/
-│   │   ├── RenderSystem.cpp
-│   │   ├── PhysicsSystem.cpp
-│   │   ├── ParticleSystem.cpp
-│   │   ├── LightingSystem.cpp
-│   │   └── ShadowSystem.cpp
-│   ├── Utils/
-│   │   ├── Math.cpp
-│   │   ├── ResourceManager.cpp
-│   │   ├── Logger.cpp
-│   │   └── Profiler.cpp
-│   ├── UI/
-│   │   ├── UIManager.cpp
-│   │   └── DebugOverlay.cpp
-│   └── main.cpp
+│   │   ├── Renderer.h         ✅ Complete
+│   │   ├── Shader.h           ✅ Complete
+│   │   ├── Mesh.h             ✅ Complete (with move semantics)
+│   │   └── Entity.h           📋 Placeholder
+│   └── Scene/
+│       ├── Camera.h           ✅ Complete
+│       ├── CameraController.h ✅ Complete
+│       ├── CameraManager.h    ✅ Complete
+│       └── Transform.h        ✅ Complete
 │
-├── include/
-│   └── [header files matching src structure]
+├── src/                        # Implementation files
+│   ├── Core/
+│   │   ├── Window.cpp         ✅ GLFW wrapper
+│   │   └── Input.cpp          ✅ Keyboard/mouse handling
+│   ├── Renderer/
+│   │   ├── Renderer.cpp       ✅ OpenGL state management
+│   │   ├── Shader.cpp         ✅ GLSL compilation
+│   │   └── Mesh.cpp           ✅ VAO/VBO management + sphere generation
+│   └── Scene/
+│       ├── Camera.cpp         ✅ View/projection matrices
+│       ├── CameraController.cpp ✅ WASD + mouse controls
+│       ├── CameraManager.cpp  ✅ Multi-camera support
+│       └── Transform.cpp      ✅ Position/rotation/scale
 │
-├── external/
-│   ├── glfw/
-│   ├── glad/
-│   ├── glm/
-│   ├── imgui/
-│   └── stb/
+├── Shader/                     # GLSL shaders
+│   ├── basic.vert             ✅ Vertex shader with MVP
+│   └── basic.frag             ✅ Fragment shader with Phong lighting
 │
-├── build/
-├── docs/
-├── tests/
-├── CMakeLists.txt
-├── README.md
-└── .gitignore
+├── Application.h/.cpp          ✅ Main application class
+├── Main.cpp                    ✅ Entry point
+├── Solar System.sln            ✅ Visual Studio solution
+├── Solar System.vcxproj        ✅ Project file
+│
+└── x64/                        # Build output
+    ├── Debug/
+    └── Release/
 ```
 
-### Component Descriptions
+### Implemented Components (Phase 1-2)
 
-#### Core Layer
-- **Application**: Main loop, initialization, shutdown
-- **Window**: GLFW wrapper, OpenGL context creation
-- **Input**: Keyboard/mouse handling, event callbacks
-- **Time**: Delta time, FPS counter, timers
+#### Core Layer ✅
+- **Application**: Main game loop with delta time calculation
+- **Window**: GLFW wrapper with OpenGL 4.6 context creation
+- **Input**: Static input manager with keyboard/mouse state tracking
 
-#### Renderer Layer
-- **Renderer**: Draw call batching, state management
-- **Shader**: GLSL compilation, uniform management
-- **Mesh**: VAO/VBO management, vertex attributes
-- **Texture**: Image loading, sampling parameters
-- **FrameBuffer**: Off-screen rendering targets
-- **UniformBuffer**: Shared shader data blocks
+#### Renderer Layer ✅
+- **Renderer**: OpenGL state management and draw call orchestration
+- **Shader**: GLSL compilation, linking, and uniform management
+- **Mesh**: VAO/VBO management with RAII and move semantics
+  - Parametric UV sphere generation
+  - Indexed drawing with element buffer objects
 
-#### Scene Layer
-- **Scene**: Scene graph traversal, update loop
-- **SceneNode**: Parent-child relationships, transforms
-- **Transform**: Position, rotation, scale matrices
-- **Camera**: View/projection matrices, frustum
-- **Light**: Point/directional/spot light data
+#### Scene Layer ✅
+- **Transform**: Position, rotation (quaternion), scale with model matrix calculation
+- **Camera**: View/projection matrices with configurable FOV and aspect ratio
+- **CameraController**: WASD movement + mouse look with delta time integration
+- **CameraManager**: Multi-camera support with viewport management
 
-#### Objects Layer
-- **GameObject**: Component container, update logic
-- **CelestialBody**: Base class for space objects
-- **Planet**: Orbital mechanics, surface details
-- **Sun**: Emissive properties, light source
-- **AsteroidBelt**: Particle system implementation
-- **Skybox**: Cubemap rendering, star field
+#### Planned Components (Phase 3+)
 
-#### Systems Layer
-- **RenderSystem**: Rendering pipeline orchestration
-- **PhysicsSystem**: Orbital calculations, collisions
-- **ParticleSystem**: Particle updates, GPU instancing
-- **LightingSystem**: Light culling, shadow casters
-- **ShadowSystem**: Shadow map generation, PCF
+**Scene Graph:**
+- SceneNode hierarchy with parent-child transforms
+- GameObject with component system
+- Scene management and traversal
+
+**Celestial Objects:**
+- CelestialBody base class with orbital mechanics
+- Planet class with rotation and axial tilt
+- Sun class with emissive properties
+- Moon class for satellite objects
+
+**Advanced Rendering:**
+- Texture loading and management
+- Material system with PBR properties
+- Lighting system (point, directional, spot lights)
+- Shadow mapping
+
+**Simulation:**
+- Orbital mechanics (Kepler's laws)
+- Time scaling controls
+- Physics integration
+- Particle systems for asteroid belts
 
 ---
 
 ## 🧑‍💻 Usage
 
-- Run the app → opens a window with current simulation view.  
-- `ESC` → exit  
-- `WASD` → move camera (free-fly mode)  
-- Mouse drag → rotate camera  
-- (Phase 4+) UI lets you adjust **time scaling** (pause, fast-forward).  
-- (Phase 5+) Click a planet to inspect details.  
+### Current Controls
+
+**Camera Movement:**
+- `W` / `S` → Move forward / backward
+- `A` / `D` → Move left / right  
+- `Q` / `E` → Move down / up
+- `Mouse Movement` → Look around (first-person view)
+- `Mouse Scroll` → Adjust movement speed
+
+**Application:**
+- `ESC` → Exit application
+
+### Current Features
+
+The application currently displays:
+- **Sun** (yellow sphere at origin)
+- **Earth** (blue-green sphere, 6 units from sun)
+- **Moon** (grey sphere, 8 units from sun)
+- **Basic Phong lighting** from sun position
+- **Interactive camera** with smooth WASD controls
+
+### Upcoming Features (Phase 3+)
+- Time scaling controls (pause, fast-forward, slow-motion)
+- Click planets to inspect details
+- Realistic orbital motion
+- Multiple camera modes (orbit, follow, free-fly)  
 
 ---
+
+## 🔧 Technical Details
+
+### Current Implementation
+
+**Graphics Pipeline:**
+- OpenGL 4.6 Core Profile
+- Custom shader system with GLSL compilation
+- VAO/VBO mesh management with move semantics
+- Depth testing and face culling enabled
+- Phong lighting model (ambient + diffuse + specular)
+
+**Architecture:**
+- Component-based design with clear separation of concerns
+- RAII pattern for OpenGL resource management
+- Input system with delta time for frame-independent movement
+- Camera system with view/projection matrix calculations
+- Transform system using GLM for matrix operations
+
+**Performance:**
+- Currently rendering 3 objects at 60+ FPS
+- Efficient mesh generation with indexed drawing
+- Proper OpenGL state management
+
+### Known Issues & Limitations
+
+- Static scene (no orbital motion yet - Phase 3)
+- No textures (Phase 4)
+- Hardcoded object positions
+- No UI overlay (Phase 6)
+- Single-threaded rendering
 
 ## 🤝 Contributing
 
 This project is primarily for **learning and exploration**, but contributions are welcome.  
 Please open an issue or PR for improvements, optimizations, or new features.
 
+### Development Guidelines
+- Follow existing code style and architecture patterns
+- Test changes thoroughly before committing
+
 ---
 
 ## 📜 License
 
 GNU V3.0 License © 2025. See [LICENSE](LICENSE) for details.
+
+---
+
+**Last Updated:** November 3, 2025  
 

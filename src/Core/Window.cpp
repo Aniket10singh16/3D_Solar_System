@@ -10,8 +10,8 @@ Window::Window(int w, int h, const std::string& title)
 Window::~Window()
 {
 	// Ensure GLFW window and context are properly released
-	glfwDestroyWindow(handle_);
-	glfwTerminate();
+	//glfwDestroyWindow(handle_);
+	//glfwTerminate();
 }
 
 bool Window::Initialize()
