@@ -14,8 +14,10 @@ Renderer, and (eventually) Scene and GameObjects.
 #define GLM_ENABLE_EXPERIMENTAL
 #include <memory>
 #include <string>
+#include <vector>
 #include "Core/Window.h"
 #include "Renderer/Renderer.h"
+#include "Renderer/Texture.h"
 #include "Core/Input.h"
 #include "Renderer/Mesh.h"
 #include "Renderer/Shader.h"
@@ -40,7 +42,8 @@ private:
     std::unique_ptr<Renderer> renderer; ///< Renderer for issuing draw calls
     std::unique_ptr<CameraManager> cameraManager; ///< Stores and switches between cameras
     std::unique_ptr<CameraController> cameraController; ///< Controls the active camera (owned externally)
-
+    std::vector<std::shared_ptr<Texture>> loadedTexture; ///< Keeps the loaded texture in memory for entire application life cycle
+    
     // Planet objects
     RenderObject sun;
     RenderObject earth;

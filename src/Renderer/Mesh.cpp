@@ -87,6 +87,14 @@ void Mesh::Initialize()
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 	glEnableVertexAttribArray(2);
 
+	// 3-> texCoord (vec2)
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+	glEnableVertexAttribArray(3);
+
+	// 4-> tangent (vec3)
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+	glEnableVertexAttribArray(4);
+
 	glBindVertexArray(0);
 }
 
@@ -161,6 +169,18 @@ Mesh Mesh::CreateSphere(float radius, unsigned int sectors, unsigned int stacks)
 
 			// Normal for a sphere is the normalized position vector (pointing outward from center)
 			v.normal = glm::normalize(v.position / radius);
+
+			// UV Coordinates
+			v.texCoord = glm::vec2(
+				(float)j / sectors,	// U: 0 to 1 (longitude)
+				(float)i / stacks);	// V: 0 to 1 (latitude)
+
+			// Tangent points in direction of increasing longitude
+			v.tangent = glm::vec3(
+				-sinf(sectorAngle),	 // Perpendicular to radius in XY plane
+				cosf(sectorAngle),
+				0.0f);
+
 			v.color = glm::vec3((float)j / sectors, (float)i / stacks, 1.0f);
 			verts.push_back(v);
 		}

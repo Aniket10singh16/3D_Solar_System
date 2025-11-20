@@ -90,6 +90,11 @@ void Renderer::DrawScene(const CameraRenderData& camData, int layer)
     {
         if (obj->renderLayer != camData.renderLayer) continue;
 
+        // Apply material before drawing
+        if (obj->material) {
+            obj->material->Apply(*shader);
+        }
+
         glm::mat4 model = obj->transform.GetModelMatrix();
         glm::mat3 normalMatrix = obj->transform.GetNormalMatrix();
 
@@ -97,13 +102,16 @@ void Renderer::DrawScene(const CameraRenderData& camData, int layer)
         shader->SetMat4("uView", view);
         shader->SetMat4("uProjection", proj);
         shader->SetMat3("uNormalMatrix", normalMatrix);
+        shader->SetVec3("uViewPos", camData.camera->GetPosition());
+        shader->SetVec3("uLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->SetVec3("uLightDir", glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)));
 
         if (firstFrame) {
             glm::vec3 pos = obj->transform.GetPosition();
             std::cout << "[Renderer] Drawing object at (" << pos.x << ", " << pos.y << ", " << pos.z << ")\n";
         }
 
-        obj->mesh.Draw();
+        obj->mesh->Draw();
         
         // Check for OpenGL errors after draw
         GLenum err = glGetError();

@@ -39,9 +39,60 @@ Application::~Application()
 void Application::InitScene()
 {
     // 3D sphere meshes
-    sun.mesh = Mesh::CreateSphere(2.0f, 48, 24);
-    earth.mesh = Mesh::CreateSphere(1.0f, 36, 18);
-    moon.mesh = Mesh::CreateSphere(0.5f, 24, 12);
+    sun.mesh = std::make_unique<Mesh>(Mesh::CreateSphere(2.0f, 360, 180));
+    earth.mesh = std::make_unique<Mesh>(Mesh::CreateSphere(1.0f, 360, 180));
+    moon.mesh = std::make_unique<Mesh>(Mesh::CreateSphere(0.5f, 360, 180));
+    
+    // ====== Load textures ======
+
+    //Load earth textures
+    auto earthDiffuse = std::make_shared<Texture>();
+    auto earthSpecular = std::make_shared<Texture>();
+
+    if (earthDiffuse->LoadFromFile("assets/textures/2k_earth_daymap.jpg")) {
+        loadedTexture.push_back(earthDiffuse);
+    }
+    if (earthSpecular->LoadFromFile("assets/textures/2k_earth_specular_map.tif")) {
+        loadedTexture.push_back(earthSpecular);
+    }
+
+    // Load Sun texture
+    auto sunDiffuse = std::make_shared<Texture>();
+
+    if (sunDiffuse->LoadFromFile("assets/textures/2k_sun.jpg")) {
+        loadedTexture.push_back(sunDiffuse);
+    }
+
+    // Load Moon texture
+    auto moonDiffuse = std::make_shared<Texture>();
+
+    if (moonDiffuse->LoadFromFile("assets/textures/2k_moon.jpg")) {
+        loadedTexture.push_back(moonDiffuse);
+    }
+
+    // ====== Create Material ======
+
+    // Earth Material
+    auto earthMaterial = std::make_shared<Material>();
+    earthMaterial->SetTexture(Render::TextureType::Diffuse, earthDiffuse.get());
+    earthMaterial->SetTexture(Render::TextureType::Specular, earthSpecular.get());
+    earthMaterial->SetShininess(32.0f);
+
+    // Sun Material
+    auto sunMaterial = std::make_shared<Material>();
+    sunMaterial->SetTexture(Render::TextureType::Diffuse, sunDiffuse.get());
+    sunMaterial->SetEmissiveColor(glm::vec3(1.0f, 0.9f, 0.7f)); //  Self illuminating
+    sunMaterial->SetShininess(1.0f);
+
+    // Moon Material
+    auto moonMaterial = std::make_shared<Material>();
+    moonMaterial->SetTexture(Render::TextureType::Diffuse , moonDiffuse.get());
+    moonMaterial->SetShininess(45.f);
+
+    // ====== Assigne material to objects ======
+    earth.material = earthMaterial;
+    sun.material = sunMaterial;
+    moon.material = moonMaterial;
 
     // Transform setup - place objects in front of camera (negative Z direction from camera at +Z)
     // Camera at (0, 0, 15) looking at negative Z, so objects should be at Z < 15
@@ -75,6 +126,10 @@ void Application::Update(float dt)
     earth.transform.SetPosition(glm::vec3(6.0f * cos(radians), 0.0f, 6.0f * sin(radians)));
     moon.transform.SetPosition(earth.transform.GetPosition() + 
         glm::vec3(2.0f * cos(3 * radians), 0.0f, 2.0f * sin(3 * radians)));
+
+    static float earthRotation = 0.0f;
+    earthRotation += dt * 30.0f;  // 30 degrees per second
+    earth.transform.SetRotationEuler(glm::vec3(0.0f, earthRotation, 0.0f));
 }
 
 void Application::Render()

@@ -14,6 +14,7 @@
 #include <Renderer/Shader.h>
 #include <Scene/Transform.h>
 #include <Renderer/Mesh.h>
+#include <Renderer/Material.h>
 #include <glm/glm.hpp>
 #include <Scene/CameraManager.h>
 
@@ -23,7 +24,9 @@
  */
 struct RenderObject
 {
-	Mesh mesh;
+	//Mesh mesh;
+	std::unique_ptr<Mesh> mesh;
+	std::shared_ptr<Material> material;
 	Transform transform;
 	int renderLayer = 0;
 };
