@@ -46,25 +46,7 @@ You should see three colored spheres (Sun, Earth, Moon) with basic lighting.
 - Sphere mesh generation (parametric UV sphere)
 - Basic Phong lighting model
 - Multiple celestial bodies rendering (Sun, Earth, Moon)
-- Camera orbit controls functional
-
-✅ **Critical Bugs Fixed (November 3, 2025):**
-- **OpenGL Resource Management**: Implemented move semantics for Mesh class to prevent GPU resource corruption
-- **Camera Pitch Clamping**: Fixed copy-paste error in pitch limit logic
-- **Memory Leak**: Added destructor to CameraManager for proper cleanup
-- **Type Safety**: Corrected mat4/mat3 type mismatch in Transform::LookAt()
-- **Renderer Storage**: Changed from value storage to pointer storage for non-copyable objects
-
-See `BUG-FIX-REPORT.md` for detailed analysis and lessons learned.
-
-### What's Working Now
-
-The application successfully renders a 3D solar system with:
-- Sun (yellow sphere at origin)
-- Earth (blue-green sphere orbiting)
-- Moon (grey sphere orbiting Earth)
-- Interactive camera with WASD + mouse controls
-- Basic lighting from sun position
+- Camera orbit controls are functional
 
 ---
 
@@ -148,31 +130,6 @@ UI Layer
 
 ---
 
-## 📸 Current Preview
-
-**Phase 2 Complete - 3D Rendering Working:**
-
-The application currently renders:
-- Three 3D spheres (Sun, Earth, Moon) with different colors
-- Phong lighting model with ambient, diffuse, and specular components
-- Interactive camera with smooth WASD movement and mouse look
-- Proper depth testing and 3D perspective
-
-**Console Output:**
-```
-[Mesh] Created sphere: 1225 vertices, 6624 indices
-[Mesh] Created sphere: 703 vertices, 3672 indices
-[Mesh] Created sphere: 325 vertices, 1584 indices
-[InitScene] Created 3 spheres (sun, earth, moon)
-[Application] Initialized successfully.
-[Renderer] OpenGL Version: 4.6.0
-[Renderer] Drew 3 objects in first frame
-```
-
-**Next Phase:** Implementing scene graph and orbital mechanics for realistic planet motion.
-
----
-
 ## ⚙️ Build Instructions
 
 ### Prerequisites
@@ -186,25 +143,6 @@ The application currently renders:
 - ✅ [GLM](https://github.com/g-truc/glm) – mathematics library for graphics
 - 📋 [stb_image](https://github.com/nothings/stb) – texture loading (Phase 4)
 - 📋 [ImGui](https://github.com/ocornut/imgui) – debug UI (Phase 6)
-
-### Build Steps
-
-1. **Open Solution**
-   ```
-   Open "Solar System.sln" in Visual Studio
-   ```
-
-2. **Select Configuration**
-   - Debug (for development with debugging symbols)
-   - Release (for optimized performance)
-
-3. **Build**
-   - Press `Ctrl+Shift+B` or Build → Build Solution
-   - Executable will be in `x64/Debug/` or `x64/Release/`
-
-4. **Run**
-   - Press `F5` (with debugging) or `Ctrl+F5` (without debugging)
-   - Or run the executable directly from the output folder
 
 ---
 
